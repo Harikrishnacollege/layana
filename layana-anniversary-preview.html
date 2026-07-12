@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Layana - Our First Anniversary</title>
+  <style>
+    :root {
+      --pink: #e84393;
+      --rose: #ff6b9d;
+      --gold: #f9ca24;
+      --teal: #00cec9;
+      --ink: #fff7fb;
+      --muted: rgba(255, 247, 251, 0.68);
+      --panel: rgba(255, 255, 255, 0.08);
+      --line: rgba(255, 255, 255, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 18%, rgba(232, 67, 147, 0.28), transparent 28%),
+        radial-gradient(circle at 80% 74%, rgba(0, 206, 201, 0.16), transparent 24%),
+        linear-gradient(135deg, #0a0612 0%, #15091e 52%, #081624 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.28) 0 1px, transparent 1px),
+        radial-gradient(circle, rgba(249, 202, 36, 0.25) 0 1px, transparent 1px);
+      background-size: 70px 70px, 110px 110px;
+      background-position: 0 0, 24px 18px;
+      opacity: 0.28;
+      animation: drift 18s linear infinite;
+      pointer-events: none;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .app {
+      position: relative;
+      width: 100vw;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    .page {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 28px 18px 104px;
+      opacity: 0;
+      transform: translateX(48px) scale(0.98);
+      pointer-events: none;
+      transition: opacity 420ms ease, transform 420ms ease;
+    }
+
+    .page.active {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .stage {
+      width: min(720px, 100%);
+      min-height: min(620px, calc(100dvh - 150px));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 22px;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    h1,
+    h2 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 400;
+      line-height: 1.05;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 13vw, 6.2rem);
+    }
+
+    h2 {
+      font-size: clamp(2.1rem, 8vw, 4.8rem);
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.8vw, 1.2rem);
+      line-height: 1.65;
+      max-width: 620px;
+    }
+
+    .name {
+      display: inline-block;
+      background: linear-gradient(90deg, var(--rose), var(--gold), var(--pink));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: shimmer 4s linear infinite;
+      background-size: 220% auto;
+    }
+
+    .soft-panel {
+      width: min(560px, 100%);
+      padding: 24px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 18px;
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(18px);
+    }
+
+    .cta,
+    .small-btn {
+      border: 0;
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--pink), #c22575);
+      box-shadow: 0 16px 34px rgba(232, 67, 147, 0.34);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .cta {
+      min-width: 170px;
+      padding: 15px 26px;
+      font-size: 1.05rem;
+    }
+
+    .small-btn {
+      padding: 11px 18px;
+      font-size: 0.94rem;
+    }
+
+    .cta:hover,
+    .small-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 42px rgba(232, 67, 147, 0.42);
+    }
+
+    .nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: 18px;
+      background: linear-gradient(0deg, rgba(10, 6, 18, 0.94), rgba(10, 6, 18, 0));
+      z-index: 20;
+    }
+
+    .nav-btn {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 1.15rem;
+    }
+
+    .progress {
+      width: min(270px, 42vw);
+      height: 7px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--pink), var(--gold));
+      transition: width 300ms ease;
+    }
+
+    .count {
+      color: var(--muted);
+      min-width: 54px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .meter {
+      width: min(380px, 84vw);
+      height: 46px;
+      padding: 6px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .meter-fill {
+      height: 100%;
+      width: 18%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--pink), var(--gold));
+      box-shadow: 0 0 28px rgba(232, 67, 147, 0.6);
+      transition: width 450ms ease;
+    }
+
+    .meter-label {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .love-slider-wrap {
+      width: min(430px, 86vw);
+      display: grid;
+      gap: 14px;
+      justify-items: center;
+    }
+
+    .love-slider {
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+      accent-color: var(--pink);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .love-slider::-webkit-slider-runnable-track {
+      height: 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: linear-gradient(90deg, var(--pink), var(--gold));
+      box-shadow: inset 0 0 0 999px rgba(255, 255, 255, 0.08);
+    }
+
+    .love-slider::-webkit-slider-thumb {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 34px;
+      height: 34px;
+      margin-top: -12px;
+      border: 4px solid #fff;
+      border-radius: 50%;
+      background: var(--pink);
+      box-shadow: 0 8px 24px rgba(232, 67, 147, 0.45);
+    }
+
+    .love-slider::-moz-range-track {
+      height: 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: linear-gradient(90deg, var(--pink), var(--gold));
+    }
+
+    .love-slider::-moz-range-thumb {
+      width: 26px;
+      height: 26px;
+      border: 4px solid #fff;
+      border-radius: 50%;
+      background: var(--pink);
+      box-shadow: 0 8px 24px rgba(232, 67, 147, 0.45);
+    }
+
+    .love-note {
+      min-height: 1.6em;
+      color: rgba(255, 247, 251, 0.9);
+      font-weight: 800;
+    }
+
+    .password-box {
+      width: min(420px, 88vw);
+      display: grid;
+      gap: 16px;
+      justify-items: center;
+    }
+
+    .password-input {
+      width: min(260px, 100%);
+      padding: 15px 18px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      outline: 0;
+      text-align: center;
+      color: var(--ink);
+      font: inherit;
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: 0.35em;
+      background: rgba(255, 255, 255, 0.09);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(18px);
+    }
+
+    .password-input[readonly] {
+      cursor: default;
+    }
+
+    .password-input:focus {
+      border-color: rgba(249, 202, 36, 0.72);
+      box-shadow: 0 0 0 4px rgba(249, 202, 36, 0.16);
+    }
+
+    .keypad {
+      width: min(260px, 100%);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .keypad-btn {
+      width: 100%;
+      aspect-ratio: 1;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      color: var(--ink);
+      font-size: 1.2rem;
+      font-weight: 900;
+      cursor: pointer;
+      background:
+        radial-gradient(circle at 32% 22%, rgba(255, 255, 255, 0.28), transparent 34%),
+        rgba(255, 255, 255, 0.08);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 14px 28px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(14px);
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .keypad-btn:hover,
+    .keypad-btn:focus-visible {
+      border-color: rgba(249, 202, 36, 0.68);
+      background:
+        radial-gradient(circle at 32% 22%, rgba(255, 255, 255, 0.38), transparent 34%),
+        rgba(232, 67, 147, 0.18);
+      transform: translateY(-2px) scale(1.03);
+      outline: 0;
+    }
+
+    .keypad-btn:active {
+      transform: translateY(1px) scale(0.96);
+    }
+
+    .keypad-btn.wide {
+      grid-column: span 2;
+      aspect-ratio: auto;
+      min-height: 58px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      letter-spacing: 0;
+    }
+
+    .password-hint {
+      min-height: 1.6em;
+      color: rgba(255, 247, 251, 0.84);
+      font-weight: 800;
+    }
+
+    .password-hint.error {
+      color: #ffb1ce;
+    }
+
+    .password-hint.success {
+      color: var(--gold);
+    }
+
+    .hands {
+      position: relative;
+      width: min(360px, 86vw);
+      height: 330px;
+    }
+
+    .hand {
+      position: absolute;
+      z-index: 1;
+      top: 72px;
+      width: 180px;
+      height: 74px;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #ffd2dc, #f2a8be);
+      box-shadow: inset 0 -10px 18px rgba(150, 55, 85, 0.18);
+    }
+
+    .hand.left {
+      left: 0;
+      transform: rotate(12deg);
+    }
+
+    .hand.right {
+      right: 0;
+      transform: rotate(168deg);
+    }
+
+    .finger {
+      position: absolute;
+      width: 120px;
+      height: 28px;
+      border-radius: 18px;
+      background: #ffc1d0;
+      top: 50px;
+    }
+
+    .left .finger {
+      right: -70px;
+      transform: rotate(-25deg);
+    }
+
+    .right .finger {
+      right: -70px;
+      transform: rotate(-25deg);
+    }
+
+    .seal {
+      position: absolute;
+      left: 50%;
+      top: 18px;
+      overflow: hidden;
+      z-index: 2;
+      width: min(230px, 68vw);
+      aspect-ratio: 4 / 5;
+      padding: 12px 12px 38px;
+      border-radius: 7px;
+      color: #3b071f;
+      background: #fff7fb;
+      transform: translateX(-50%) rotate(-5deg) scale(0);
+      box-shadow: 0 24px 55px rgba(35, 4, 21, 0.34), 0 0 0 1px rgba(255, 255, 255, 0.48);
+      transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+      font-weight: 900;
+    }
+
+    .seal::after {
+      content: "Us";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 10px;
+      text-align: center;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1rem;
+      color: #601837;
+    }
+
+    .seal img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+      background: #f1dfe7;
+      opacity: 0;
+      transform: scale(1.08);
+      transition: opacity 260ms ease 130ms, transform 420ms cubic-bezier(0.22, 1, 0.36, 1) 80ms;
+    }
+
+    .seal.done img {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .seal.done {
+      transform: translateX(-50%) rotate(-5deg) scale(1);
+    }
+
+    .cake {
+      position: relative;
+      width: min(360px, 86vw);
+      height: 260px;
+      margin-top: 10px;
+    }
+
+    .plate {
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      bottom: 26px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.26);
+    }
+
+    .tier {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 20px 20px 16px 16px;
+      background: linear-gradient(180deg, #ff93b6, #d63384);
+      box-shadow: inset 0 -16px 0 rgba(90, 6, 44, 0.14);
+    }
+
+    .tier.one {
+      width: 300px;
+      height: 78px;
+      bottom: 46px;
+    }
+
+    .tier.two {
+      width: 220px;
+      height: 62px;
+      bottom: 118px;
+      background: linear-gradient(180deg, #ffd1dc, #ff7aa9);
+    }
+
+    .candle {
+      position: absolute;
+      bottom: 178px;
+      width: 16px;
+      height: 54px;
+      border-radius: 6px;
+      background: repeating-linear-gradient(45deg, #fff, #fff 7px, #f9ca24 7px, #f9ca24 13px);
+    }
+
+    .candle:nth-child(4) {
+      left: 126px;
+    }
+
+    .candle:nth-child(5) {
+      left: 172px;
+    }
+
+    .candle:nth-child(6) {
+      left: 218px;
+    }
+
+    .flame {
+      position: absolute;
+      left: 50%;
+      top: -24px;
+      width: 18px;
+      height: 26px;
+      border-radius: 50% 50% 50% 0;
+      background: linear-gradient(180deg, #fff6a8, #ff8f00);
+      transform: translateX(-50%) rotate(-45deg);
+      box-shadow: 0 0 20px rgba(249, 202, 36, 0.9);
+      animation: flicker 600ms ease-in-out infinite alternate;
+    }
+
+    .cake.blown .flame {
+      opacity: 0;
+      transform: translateX(-50%) rotate(-45deg) scale(0.2);
+      transition: all 260ms ease;
+    }
+
+    .letter {
+      text-align: left;
+      min-height: 260px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.05rem, 3vw, 1.28rem);
+      line-height: 1.7;
+      color: rgba(255, 247, 251, 0.92);
+      white-space: pre-wrap;
+    }
+
+    .promises {
+      position: relative;
+      width: min(560px, 100%);
+      min-height: 340px;
+    }
+
+    .promise {
+      position: absolute;
+      width: min(220px, 44vw);
+      min-height: 90px;
+      padding: 15px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 0.98rem;
+      line-height: 1.35;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+      animation: floaty 5s ease-in-out infinite;
+    }
+
+    .promise:nth-child(1) { left: 0; top: 20px; animation-delay: -1s; }
+    .promise:nth-child(2) { right: 0; top: 0; animation-delay: -2s; }
+    .promise:nth-child(3) { left: 50%; top: 122px; transform: translateX(-50%); animation-delay: -3s; }
+    .promise:nth-child(4) { left: 22px; bottom: 0; animation-delay: -4s; }
+    .promise:nth-child(5) { right: 22px; bottom: 22px; animation-delay: -5s; }
+
+    .gift {
+      position: relative;
+      width: 190px;
+      height: 160px;
+      cursor: pointer;
+      transform-style: preserve-3d;
+    }
+
+    .box {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 0;
+      height: 104px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--pink), #b71c64);
+      box-shadow: 0 24px 54px rgba(232, 67, 147, 0.35);
+    }
+
+    .box::before,
+    .lid::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 28px;
+      transform: translateX(-50%);
+      background: var(--gold);
+    }
+
+    .lid {
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      bottom: 100px;
+      height: 42px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #ff79ad, #cf2879);
+      transform-origin: left bottom;
+      transition: transform 420ms ease;
+    }
+
+    .gift.open .lid {
+      transform: translate(-20px, -38px) rotate(-18deg);
+    }
+
+    .gift-message {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: all 420ms ease 160ms;
+    }
+
+    .gift.open + .gift-message {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .heart {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      background: var(--pink);
+      transform: rotate(45deg);
+      opacity: 0.66;
+      pointer-events: none;
+      animation: rise 7s linear forwards;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: inherit;
+    }
+
+    .heart::before {
+      left: -6px;
+    }
+
+    .heart::after {
+      top: -6px;
+    }
+
+    @keyframes drift {
+      to {
+        background-position: 70px 70px, 134px 128px;
+      }
+    }
+
+    @keyframes shimmer {
+      to {
+        background-position: 220% center;
+      }
+    }
+
+    @keyframes flicker {
+      from {
+        transform: translateX(-50%) rotate(-45deg) scale(0.9);
+      }
+      to {
+        transform: translateX(-50%) rotate(-45deg) scale(1.08);
+      }
+    }
+
+    @keyframes floaty {
+      50% {
+        translate: 0 -12px;
+      }
+    }
+
+    @keyframes rise {
+      from {
+        translate: 0 0;
+      }
+      to {
+        translate: 0 -110vh;
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .page {
+        padding: 20px 14px 94px;
+      }
+
+      .stage {
+        gap: 18px;
+        min-height: calc(100dvh - 132px);
+      }
+
+      .soft-panel {
+        padding: 18px;
+        border-radius: 16px;
+      }
+
+      .promises {
+        min-height: 420px;
+      }
+
+      .promise {
+        position: relative;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+        width: 100%;
+        margin: 10px 0;
+        min-height: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app" aria-live="polite">
+    <section class="page active">
+      <div class="stage">
+        <p class="eyebrow">July 13 - 1st Anniversary</p>
+        <h1>For <span class="name">Layana</span></h1>
+        <p>
+          One year of us. One year of little smiles, soo manyy fights 😭😭, and a love
+          I want to choose again and again.
+        </p>
+        <button class="cta" type="button" data-next>Begin</button>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="stage">
+        <p class="eyebrow">Love Meter</p>
+        <h2>I know u hate me still say how much you love me :)</h2>
+        <div class="meter" aria-label="Love meter">
+          <div class="meter-fill" id="meterFill"></div>
+        </div>
+        <div class="meter-label" id="meterLabel">18%</div>
+        <label class="love-slider-wrap" for="loveSlider">
+          <input class="love-slider" id="loveSlider" type="range" min="0" max="100" value="18" />
+          <span class="love-note" id="loveNote">Choose exactly how much you love me.</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="stage">
+        <p class="eyebrow">Secret Code</p>
+        <h2>Only you can open this</h2>
+        <div class="password-box soft-panel">
+          <p>Enter our little password to continue.</p>
+          <input class="password-input" id="passwordInput" type="password" inputmode="numeric" maxlength="4" aria-label="Password" readonly />
+          <div class="keypad" aria-label="Password keypad">
+            <button class="keypad-btn" type="button" data-key="1">1</button>
+            <button class="keypad-btn" type="button" data-key="2">2</button>
+            <button class="keypad-btn" type="button" data-key="3">3</button>
+            <button class="keypad-btn" type="button" data-key="4">4</button>
+            <button class="keypad-btn" type="button" data-key="5">5</button>
+            <button class="keypad-btn" type="button" data-key="6">6</button>
+            <button class="keypad-btn" type="button" data-key="7">7</button>
+            <button class="keypad-btn" type="button" data-key="8">8</button>
+            <button class="keypad-btn" type="button" data-key="9">9</button>
+            <button class="keypad-btn wide" type="button" id="clearPassword">Clear</button>
+            <button class="keypad-btn" type="button" data-key="0">0</button>
+          </div>
+          <div class="password-hint" id="passwordHint">Four numbers,a number only we both know.</div>
+          <button class="cta" type="button" id="unlockPassword">Unlock</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="stage">
+        <p class="eyebrow">Pinky Promise</p>
+        <h2>A promise from me</h2>
+        <div class="hands" aria-hidden="true">
+          <div class="hand left"><div class="finger"></div></div>
+          <div class="hand right"><div class="finger"></div></div>
+          <div class="seal" id="seal">
+            <img src="WhatsApp Image 2026-07-12 at 23.57.12.jpeg" alt="Us" />
+          </div>
+        </div>
+        <p>I promise you one thing regardless of how many ever things I did wrong ponna, Im sorry. Ik you dont like sorry but yeahh you will always be my loml </p>
+        <button class="cta" type="button" id="sealPromise">Seal the promise</button>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="stage">
+        <p class="eyebrow">Cake Time</p>
+        <h2>Tell me a wish out loud to me</h2>
+        <div class="cake" id="cake" aria-label="Anniversary cake">
+          <div class="plate"></div>
+          <div class="tier one"></div>
+          <div class="tier two"></div>
+          <div class="candle"><div class="flame"></div></div>
+          <div class="candle"><div class="flame"></div></div>
+          <div class="candle"><div class="flame"></div></div>
+        </div>
+        <p id="cakeText">Tap the cake to blow out the candles.</p>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="stage">
+        <p class="eyebrow">A Letter</p>
+        <div class="soft-panel">
+          <div class="letter" id="letter"></div>
+        </div>
+        <button class="small-btn" type="button" id="retype">Play again</button>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="stage">
+        <p class="eyebrow">Five Promises</p>
+        <h2>What I want to give you</h2>
+        <div class="promises">
+          <div class="promise">I will choose us, every single day.</div>
+          <div class="promise">I will listen to you with patience and love.</div>
+          <div class="promise">I will protect your smile like it is precious.</div>
+          <div class="promise">I will grow with you, not away from you.</div>
+          <div class="promise">I will love you more honestly every year.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="stage">
+        <p class="eyebrow">Final Gift</p>
+        <h2>Happy first anniversary, Layana</h2>
+        <div class="gift" id="gift" role="button" tabindex="0" aria-label="Open gift">
+          <div class="lid"></div>
+          <div class="box"></div>
+        </div>
+        <p class="gift-message">
+          My gift is simple: myself.
+        </p>
+        <button class="cta" type="button" id="restart">Start again</button>
+      </div>
+    </section>
+
+    <nav class="nav" aria-label="Page controls">
+      <button class="nav-btn" type="button" id="prev" aria-label="Previous page">&#8249;</button>
+      <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+      <div class="count" id="count">1 / 8</div>
+      <button class="nav-btn" type="button" id="next" aria-label="Next page">&#8250;</button>
+    </nav>
+  </main>
+
+  <script>
+    const pages = [...document.querySelectorAll(".page")];
+    const progress = document.querySelector("#progress");
+    const count = document.querySelector("#count");
+    const prev = document.querySelector("#prev");
+    const next = document.querySelector("#next");
+    const begin = document.querySelector("[data-next]");
+    let index = 0;
+    let passwordUnlocked = false;
+
+    function showPage(nextIndex) {
+      if (index === 2 && nextIndex > index && !passwordUnlocked) {
+        showPasswordMessage("Try the code first.", "error");
+        return;
+      }
+      index = Math.max(0, Math.min(pages.length - 1, nextIndex));
+      pages.forEach((page, pageIndex) => {
+        page.classList.toggle("active", pageIndex === index);
+      });
+      progress.style.width = `${((index + 1) / pages.length) * 100}%`;
+      count.textContent = `${index + 1} / ${pages.length}`;
+      prev.disabled = index === 0;
+      next.disabled = index === pages.length - 1 || (index === 2 && !passwordUnlocked);
+      if (index === 5) typeLetter();
+    }
+
+    prev.addEventListener("click", () => showPage(index - 1));
+    next.addEventListener("click", () => showPage(index + 1));
+    begin.addEventListener("click", () => showPage(1));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.target.matches("input")) return;
+      if (event.key === "ArrowRight") showPage(index + 1);
+      if (event.key === "ArrowLeft") showPage(index - 1);
+    });
+
+    let love = 18;
+    let lastHeartLove = love;
+    const meterFill = document.querySelector("#meterFill");
+    const meterLabel = document.querySelector("#meterLabel");
+    const loveSlider = document.querySelector("#loveSlider");
+    const loveNote = document.querySelector("#loveNote");
+
+    function updateLoveMeter(nextLove) {
+      love = Number(nextLove);
+      meterFill.style.width = `${love}%`;
+      meterLabel.textContent = `${love}%`;
+      if (love < 35) {
+        loveNote.textContent = "Only this much? I am watching.";
+      } else if (love < 70) {
+        loveNote.textContent = "That is sweet... but I think there is more.";
+      } else if (love < 100) {
+        loveNote.textContent = "Now my heart understands us.";
+      } else {
+        loveNote.textContent = "Perfect. That is the correct answer.";
+        burstHearts(6);
+      }
+      if (Math.abs(love - lastHeartLove) >= 4 || love === 100) {
+        burstHearts(5);
+        lastHeartLove = love;
+      }
+    }
+
+    loveSlider.addEventListener("input", (event) => updateLoveMeter(event.target.value));
+
+    const passwordInput = document.querySelector("#passwordInput");
+    const passwordHint = document.querySelector("#passwordHint");
+    const unlockPassword = document.querySelector("#unlockPassword");
+    const clearPassword = document.querySelector("#clearPassword");
+    const keypadButtons = [...document.querySelectorAll("[data-key]")];
+
+    function showPasswordMessage(message, tone = "") {
+      passwordHint.textContent = message;
+      passwordHint.className = `password-hint ${tone}`.trim();
+    }
+
+    function checkPassword() {
+      if (passwordInput.value === "2036") {
+        passwordUnlocked = true;
+        showPasswordMessage("Are you Sure gais.", "success");
+        burstHearts(12);
+        showPage(3);
+        return;
+      }
+      passwordInput.value = "";
+      passwordInput.focus();
+      showPasswordMessage("Not that you shitty bakwass lady. Try again.", "error");
+    }
+
+    keypadButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (passwordInput.value.length >= 4) return;
+        passwordInput.value += button.dataset.key;
+        showPasswordMessage("Four numbers, one tiny secret.");
+        if (passwordInput.value.length === 4) checkPassword();
+      });
+    });
+
+    clearPassword.addEventListener("click", () => {
+      passwordInput.value = "";
+      showPasswordMessage("Four numbers, one tiny secret.");
+    });
+
+    unlockPassword.addEventListener("click", checkPassword);
+    passwordInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") checkPassword();
+    });
+
+    document.querySelector("#sealPromise").addEventListener("click", () => {
+      document.querySelector("#seal").classList.add("done");
+      burstHearts(12);
+    });
+
+    const cake = document.querySelector("#cake");
+    cake.addEventListener("click", () => {
+      cake.classList.add("blown");
+      document.querySelector("#cakeText").textContent = "Wish made. I hope every year brings us closer.";
+      burstHearts(10);
+    });
+
+    const letterText = `Dear Layana,
+
+It's our day again - July 13.
+
+The best thing i ever did was come to our 10th farwell. From the very first day of meeting you , you have made my world so much better, and more meaningful. This first anniversary is not just a date to me. It is proof that a girl like you can love me. Uk today whole day seeing this movie the only person who came to my brain was you.
+
+Thank you for being you. Thank you for being my favorite part of the day.
+
+Happy 1st anniversary, my ponna.`;
+
+    const letter = document.querySelector("#letter");
+    let typingTimer = null;
+    let hasTyped = false;
+
+    function typeLetter(force = false) {
+      if (hasTyped && !force) return;
+      hasTyped = true;
+      clearInterval(typingTimer);
+      letter.textContent = "";
+      let cursor = 0;
+      typingTimer = setInterval(() => {
+        letter.textContent = letterText.slice(0, cursor);
+        cursor += 1;
+        if (cursor > letterText.length) clearInterval(typingTimer);
+      }, 24);
+    }
+
+    document.querySelector("#retype").addEventListener("click", () => typeLetter(true));
+
+    const gift = document.querySelector("#gift");
+    function openGift() {
+      gift.classList.add("open");
+      burstHearts(18);
+    }
+    gift.addEventListener("click", openGift);
+    gift.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") openGift();
+    });
+
+    document.querySelector("#restart").addEventListener("click", () => {
+      passwordUnlocked = false;
+      passwordInput.value = "";
+      showPasswordMessage("Four numbers, one tiny secret.");
+      showPage(0);
+      gift.classList.remove("open");
+    });
+
+    function burstHearts(amount) {
+      for (let i = 0; i < amount; i += 1) {
+        const heart = document.createElement("span");
+        heart.className = "heart";
+        heart.style.left = `${20 + Math.random() * 60}vw`;
+        heart.style.bottom = `${-20 - Math.random() * 20}px`;
+        heart.style.scale = `${0.7 + Math.random() * 1.4}`;
+        heart.style.background = Math.random() > 0.5 ? "var(--pink)" : "var(--gold)";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 7200);
+      }
+    }
+
+    showPage(0);
+  </script>
+</body>
+</html>
